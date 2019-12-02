@@ -36,15 +36,21 @@ export default {
       },
 
 
-    //   authenticate the token received and give the user information
-    async validateToken({commit}, token){
-         commit ('SET_TOKEN',token)
+    //   authenticate the token received and get the user information
+    async validateToken({commit, state}, token){
+
+        // if there is a token we can commit to the mutation SET_TOKEN
+        if(token){
+            commit ('SET_TOKEN',token)
+        }
+
+        // at this point if the state.token is null we dont send the request to authenticate
+        if (!state.token){
+            return
+        }
+        
          try{
-             const response= await axios.get('auth/me',{
-                 headers: {
-                     'Authorization': 'Bearer'+ token
-                 }
-             })
+             const response= await axios.get('auth/me')
 
             //  committing the user data to the SET_USER mutation
             commit('SET_USER', response.data)

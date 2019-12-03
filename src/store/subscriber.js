@@ -8,11 +8,11 @@ switch (mutation.type){
     case 'auth/SET_TOKEN':
         if (mutation.payload){
             axios.defaults.headers.common['Authorization'] = `Bearer ${mutation.payload}`
-            // storing our token to the localStorage
-            localStorage.setItem('token',mutation.payload)
+            // storing our token to the sessionStorage
+            sessionStorage.setItem('token',mutation.payload)
         } else{
             axios.defaults.headers.common['Authorization'] = null
-            localStorage.removeItem('token')
+            sessionStorage.removeItem('token')
         }
         // console.log(mutation.payload)
         break;

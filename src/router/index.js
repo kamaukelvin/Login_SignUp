@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Dashboard from "../views/Dashboard.vue";
+// import store from "@/store";
 
 Vue.use(VueRouter);
 
@@ -11,6 +13,13 @@ const routes = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard
+    // beforeEnter: (to, from, next) => {
+    //   if (!store.getters["auth/getAuthentication"]) {
+    //     return next({
+    //       name: "Login"
+    //     });
+    //   }
+    // }
   },
   {
     path: "/login",

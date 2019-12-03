@@ -8,7 +8,7 @@
       <v-toolbar-title>Login & SignUp</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <div v-if="getAuthentication">
+      <div v-if="!getAuthentication">
         <router-link to="/login" tag="span">
       <v-btn >
       <a>Login</a>
@@ -17,26 +17,40 @@
       <v-btn>
           <a>Register</a>
       </v-btn></router-link> 
-      </div>
-      <template v-else>
-      <router-link to="/signOut" tag="span">
-      <v-btn>
+      </div >
+      <div v-else >
+      <v-btn @click.prevent="signOut">
           <a>SignOut</a>
-      </v-btn></router-link>
-      </template> 
+      </v-btn>
+      </div> 
     </v-app-bar>
   </div>
 </template>
 
 <script>
-import {mapGetters} from "vuex"
+import {mapGetters, mapActions} from "vuex"
+
 export default {
     name: 'Navigation',
     methods:{
+      ...mapActions({
+        signOutAction: 'auth/signOut'
+      }),
+      signOut(){
+        this.signOutAction().then(()=>{
+          this.$router.replace({
+            name: 'Login'
+          })
+        })
+      }
+      
+    },
+    computed:{
       ...mapGetters({
         getAuthentication: 'auth/getAuthentication',
         getUser: 'auth/getUser'
       })
+
     }
 
 }

@@ -61,6 +61,13 @@ export default {
                
          }
 
+    },
+// the signout method is not asynchrous coz we want to set the token & user to null once we are sure they are logged out
+    signOut({commit}){
+        return axios.post('auth/signout').then(()=>{
+            commit('SET_TOKEN', null)
+                commit('SET_USER', null) 
+        })
     }
   }
 };

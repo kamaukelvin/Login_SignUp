@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
@@ -14,8 +15,6 @@ require("@/store/subscriber");
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
 Vue.use(BootstrapVue);
 
-// re-authenticating user automatically using token stored in localStorage to avoid logging in again incase user refreshes page
-store.dispatch("auth/validateToken", localStorage.getItem("token"));
 
 // this helps us use axios universally
 window.axios = axios;
@@ -24,9 +23,17 @@ window.axios = axios;
 Vue.use(vuetify);
 Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount("#app");
+store.dispatch('auth/validateToken', sessionStorage.getItem('token')).then(()=>{
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
+  }).$mount("#app")
+})
+
+ 
+
+
+
+

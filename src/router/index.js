@@ -35,10 +35,16 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     // component: () =>
     //   import(/* webpackChunkName: "about" */ "../views/Register.vue")
+  },
+  // redirect incase user types navigates to a wrong path route
+  {
+    path: "*",
+    redirect: "/login"
   }
 ];
 
 const router = new VueRouter({
+  mode: "history",
   routes
 });
 

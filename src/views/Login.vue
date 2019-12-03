@@ -59,6 +59,7 @@ export default {
    
    submit(){
    this.signIn(this.login).then(()=>{
+  
      this.$router.replace({
        name: 'Dashboard'
      }).catch(()=>console.log('Failed'))

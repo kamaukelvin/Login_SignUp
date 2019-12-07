@@ -21,20 +21,18 @@ const routes = [
     //   }
     // }
   },
+
+  // ensure that the login route accepts props to be able to access the success message after registering
   {
     path: "/login",
     name: "Login",
+    props: true,
     component: Login
   },
   {
     path: "/register",
     name: "Register",
     component: Register
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    // component: () =>
-    //   import(/* webpackChunkName: "about" */ "../views/Register.vue")
   },
   // redirect incase user types navigates to a wrong path route
   {

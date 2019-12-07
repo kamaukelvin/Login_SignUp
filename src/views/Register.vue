@@ -2,39 +2,85 @@
   <div class="about">
      <div class="text-md-center">
     <template>
+     
   <div class="text-md-center">
  
      <v-flex xs4 offset-xs4>
+
+       <!-- SUCCESS MESSAGE MOVED TO LOGIN COMPONENT BY PROPS -->
+        <!-- <div v-if="registerForm.successMessage" class="success-message">{{registerForm.successMessage}}</div> -->
     <v-card  >
       
     <h2>Register</h2>
- <v-form @submit="registerMe">
+ <v-form @submit.prevent="validateBeforeSubmit">
 
     <v-container>
     <v-flex offset-xs2>
        <v-col cols="12" sm="10" md="10">
+           <span class="form-error">{{ errors.first('firstname') }}</span>
           <v-text-field
-          v-model="register.username"
-            label="Enter Username"
-            outlined
+          v-validate="'required'"
+          name="firstname"
+          :class="{'input-error': errors.has('firstname')}"
+          v-model="registerForm.firstname"
+          label="Enter First Name"
+          outlined
+          type="text"
           ></v-text-field>
+        
+          
+ 
+         
         </v-col>
        <v-col cols="12" sm="10" md="10">
+          <span class="form-error">{{ errors.first('lastname') }}</span>
           <v-text-field
-          v-model="register.email"
+            v-validate="'required'"
+            name="lastname"  
+            :class="{'input-error': errors.has('lastname')}"
+            v-model="registerForm.lastname"
+            label="Enter Last Name"
+            outlined
+            type="text" 
+          ></v-text-field>
+       
+        </v-col>
+
+       <v-col cols="12" sm="10" md="10">
+          <span class="form-error">{{ errors.first('email') }}</span>
+          <v-text-field
+            name="email"
+            :class="{'input-error': errors.has('email')}"
+           v-validate="'required|email'"
+            v-model="registerForm.email"
             label="Enter Email"
             placeholder="example@email.com"
             outlined
+            type="email"
+          
           ></v-text-field>
+        
+         
+        
+
         </v-col>
        <v-col cols="12" sm="10" md="10">
+            <span class="form-error">{{ errors.first('password') }}</span>
           <v-text-field
-          v-model="register.password"
+            name="password"
+            :class="{'input-error': errors.has('password')}"
+          v-validate="'required|min:6'"
+            v-model="registerForm.password"
             label="Enter Password"
-             placeholder="********"
+            placeholder="********"
             outlined
+         
             type="password"
           ></v-text-field>
+       
+          
+   
+       
         </v-col>
         <!-- <v-checkbox
       v-model="checkbox"
@@ -57,46 +103,84 @@
   </div>
   </div>
 </template>
+
 <script>
 /*eslint-disable no-console */
-import axios from "axios"
-
+import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+  import {mapActions} from "vuex"
 export default {
+created(){
+  this.$toast.success({
+    title: 'Registered Successfully',
+    message: 'Please Login to continue'
+  })
+},
 
   data(){
     return{
-      register:{
-       name:"",
+      registerForm:{
+       firstname:"",
+       lastname:"",
         email:"",
-        username:""
+        password:"",
+        successMessage:""
+      
       }
     }
   },
   methods:{
-    registerMe(){
-      axios.post("https://jsonplaceholder.typicode.com/users",this.register)
-      .then(res=>{ 
-         console.log (res.data) 
-        // obtaining the token from api 
-        let token = res.data.email
+    ...mapActions({
+         register: 'auth/register'
+    }),
 
-        // storing the token from the api
-        // first parameter in round brackets is name of token in localstorage, can be any word you choose
-        // second parameter is the token from api as set by the variable above
-        localStorage.setItem('token',token)
-        console.log(token)
-      })
-      .catch(err=>console.log(err))
-      }
+    // This method ensures that the form is not submitted if it has errors until they are corrected
+        validateBeforeSubmit() {
+      this.$validator.validate().then((result) => {
+        if (result) {
+      this.registerMe();
+       
+        }
+
+        // alert('Correct them errors!');
+      });
+    },
+    async registerMe(){
+      this.register(this.registerForm).then(()=>{
+      this.registerForm.successMessage = "Registered Successfully!"
+
+      // how i redirected before adding a success message
+
+    //  this.$router.replace({
+    //    name: 'Login' })
+
+    // passing parameters to different routes while redirecting 
+    // dataSuccessMessage is the props that we will be passing down to a different route
+     this.$router.replace({
+       name: 'Login', params:{dataSuccessMessage: this.registerForm.successMessage} })
+
+
+
+    
+   })
+     
     }
-
   }
-  
+}
 
 
 </script>
 
  <style scoped>
+
+ .form-error{
+   font-size: 12px;
+   color: #a94442;
+
+ }
+ .input-error{
+border: 1px solid red;
+ }
+
 .v-card{
   margin-top: 5em;
 }
@@ -121,4 +205,13 @@ a:not([href]):not([tabindex]):hover {
     text-decoration: underline;
 
 }
+
+
  </style>
+
+
+
+//  Notes
+
+// 1. the :class in the text-field binds the class input-error with the text-field
+// 2. it generally says if the text-field has errors the class input-error is active

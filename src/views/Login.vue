@@ -2,11 +2,15 @@
   <div class="text-md-center">
   
     <v-flex  xs4 offset-xs4>
+        <div v-if="login.successMessage" class="success-message">{{login.successMessage}}</div>
     <v-card>
         <h2>Login</h2>
+   
+      
  <v-form @submit.prevent="submit">
 
     <v-container>
+      
       <v-flex offset-xs2>
        <v-col cols="12" sm="10" md="10">
           <v-text-field
@@ -27,6 +31,7 @@
         </v-col>
       </v-flex>
        <v-btn type="submit">
+        
       Login
     </v-btn>
     
@@ -42,12 +47,19 @@
 /*eslint-disable no-console */
 import {mapActions} from "vuex"
 export default {
-
+// accept our successmessage props
+props:{
+  dataSuccessMessage:{
+    type:String
+  }
+},
   data(){
     return{
    login:{
       email:"",
-      password:""
+      password:"",
+      successMessage: this.dataSuccessMessage,
+    
     }
     }
  
@@ -58,17 +70,45 @@ export default {
     }),
    
    submit(){
-   this.signIn(this.login).then(()=>{
-  
+   this.signIn(this.login)
+   .then(()=>{
      this.$router.replace({
        name: 'Dashboard'
-     }).catch(()=>console.log('Failed'))
+     })
+   })
+   .catch(error=>{
+     this.login.serverError = error.response,
+     this.login.password = "",
+     this.login.successMessage = ""
    })
     }
-}
+},
+
 }
 </script>
 <style scoped>
+.theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+    background-color: forestgreen;
+}
+.v-btn__content {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: inherit;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-box-pack: inherit;
+    -ms-flex-pack: inherit;
+    justify-content: inherit;
+    line-height: normal;
+    position: relative;
+    padding: 0 7em;
+}
+
 .v-card{
   margin-top: 5em;
 }
@@ -76,6 +116,7 @@ h2{
   padding: .75em;
 }
 .v-btn{
+ 
   margin-bottom:2em;
 }
 .text{
@@ -92,6 +133,14 @@ a:not([href]):not([tabindex]):hover {
     color: #1976d2;
     text-decoration: underline;
 
+}
+.success-message{
+  background-color:#dff0d8;
+  color:#3c763d;
+  margin-top: 12px;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 4px;
 }
 
 </style>

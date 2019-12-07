@@ -37,6 +37,7 @@ export default {
         signOutAction: 'auth/signOut'
       }),
       signOut(){
+        
         this.signOutAction().then(()=>{
           this.$router.replace({
             name: 'Login'
@@ -47,6 +48,7 @@ export default {
     },
     computed:{
       ...mapGetters({
+        
         getAuthentication: 'auth/getAuthentication',
         getUser: 'auth/getUser'
       })

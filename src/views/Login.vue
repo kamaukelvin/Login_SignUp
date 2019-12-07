@@ -30,9 +30,12 @@
           ></v-text-field>
         </v-col>
       </v-flex>
-       <v-btn type="submit">
+       <v-btn type="submit" :disabled="login.loading">
         
-      Login
+      Login 
+<span v-if ="login.loading">
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </span>
     </v-btn>
     
     </v-container>
@@ -59,6 +62,7 @@ props:{
       email:"",
       password:"",
       successMessage: this.dataSuccessMessage,
+      loading:false
     
     }
     }
@@ -70,13 +74,16 @@ props:{
     }),
    
    submit(){
+     this.login.loading = true
    this.signIn(this.login)
    .then(()=>{
+      this.login.loading = false
      this.$router.replace({
        name: 'Dashboard'
      })
    })
    .catch(error=>{
+      this.login.loading = false
      this.login.serverError = error.response,
      this.login.password = "",
      this.login.successMessage = ""
@@ -142,5 +149,47 @@ a:not([href]):not([tabindex]):hover {
   padding: 10px 16px;
   border-radius: 4px;
 }
+.v-btn [submit]
+.disabled{
+  background: lighten(#60BD4F, 25%);
+  cursor:not-allowed; 
+}
 
+
+/* css spinner */
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 35px;
+  height: 35px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: 8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
